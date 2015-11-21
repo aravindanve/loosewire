@@ -1,0 +1,449 @@
+/* 
+ * styles for loosewire wireframing tool app
+ * by @aravindanve
+*/
+
+/* imports */
+
+@import url(common.less);
+@import url(canvas.less);
+
+
+/* styles */
+
+html, body {
+    position: relative;
+    float: none;
+    height: 100%;
+}
+
+body {
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #eee;
+}
+
+a, a:hover, a:active, a:focus {
+    outline: none;
+}
+input, input:hover, input:active, input:focus,
+select, select:hover, select:active, select:focus,
+textarea, textarea:hover, textarea:active, textarea:focus,
+.inputlike, .inputlike:hover, .inputlike:active, .inputlike:focus, {
+    outline: none;
+}
+
+a {
+    cursor: pointer;
+}
+.btn-color(@color, @hover-color: #fff) {
+    border-color: @color;
+    color: @color;
+
+    &:hover {
+        background-color: @color;
+        color: @hover-color;
+    }
+}
+
+.bt() {
+    text-decoration: none;
+    border: #222 solid 1px;
+    color: #222;
+    border-radius: 2px;
+    padding: 6px 14px;
+    margin: 2px;
+
+    &:hover {
+        background-color: #222;
+        color: #fff;
+    }
+
+    &:disabled, &.disabled, &[data-disabled] {
+        background-color: #aaa !important;
+        border-color: #aaa !important;
+        color: #444 !important;
+    }
+
+    &.g-block {
+        display: block;
+        float: left;
+    }
+
+    &.g-block-right {
+        display: block;
+        float: right;
+    }
+
+    &.g-tiny {
+        padding: 2px 8px;
+        margin: 2px;
+    }
+
+    &.g-blue {
+        .btn-color(#1D5EC7);
+    }
+
+    &.g-red {
+        .btn-color(#d30);
+    }
+
+    &.g-grey {
+        .btn-color(#aaa);
+    }
+}
+
+button, a.btn {
+    .bt;
+}
+
+input, select, textarea, .inputlike {
+    display: block;
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border: #eee solid 1px;
+    border-radius: 2px;
+
+    &:focus {
+        border-color: #222;
+    }
+}
+
+.message {
+    padding: 15px;
+}
+
+.menu-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: #013C7B;
+    color: #fff;
+
+    &.readonly {
+        background-color: #f6f6f6;
+        color: #222;
+
+        ul.menu-items > li {
+            a {
+                color: #222;
+
+                &:hover {
+                    background-color: rgba(0,0,0,0.1);
+                }
+
+                &.btn {
+                    .bt;
+                    padding: 4px 12px;
+                    margin: 3px;
+                }
+            }
+            .mode {
+                color: #555;
+                background-color: #fe0;
+            }
+        }
+    }
+
+    ul.menu-items {
+        float: left;
+        text-transform: uppercase;
+        font-size: 12px;
+        user-select: none;
+        -moz-user-select: none;
+        .nl;
+
+        &.g-right {
+            float: right;
+        }
+
+        & > li {
+            float: left;
+
+            a, .mode {
+                display: block;
+                text-decoration: none;
+                color: #fff;
+                padding: 8px 10px;
+            }
+
+            a {
+                &:hover {
+                    background-color: rgba(0,0,0,0.2);
+                }
+
+                &.logo {
+                    font-weight: bold;
+                    color: #FF64BF;
+                }
+
+                &.btn {
+                    .btn-color(#fff, #222);
+                    padding: 4px 12px;
+                    margin: 3px;
+
+                    &.g-red {
+                        .btn-color(#f00, #222);
+                    }
+                }
+            }
+
+            .mode {
+                text-transform: uppercase;
+                background-color: rgba(255,255,255,0.4);
+
+                .save-status {
+                    color: #ff0;
+                }
+            }
+        }
+    }
+}
+
+.modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 999;
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(255,255,255,0.4);
+    }
+
+    .wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        // align-items: center;
+
+        .modal-window {
+            display: block;
+            position: relative;
+            align-self: center;
+            margin: auto;
+            width: 100%;
+            max-width: 500px;
+
+            .modal-clear {
+                position: relative;
+                float: none;
+                height: 25px;
+            }
+
+            .modal-body {
+                position: relative;
+                float: none;
+                min-height: 80px;
+                margin: 25px 0;
+                background-color: #fff;
+                border: #eee solid 1px;
+
+                .modal-close {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    padding: 10px;
+
+                    a.btn {
+                        .btn-color(#ddd);
+                        border-color: rgba(0,0,0,0);
+                        color: #aaa;
+                    }
+                }
+
+                .modal-item {
+                    .modal-section, .modal-bottom {
+                        position: relative;
+                        float: none;
+                        padding: 15px;
+
+                        &:first-child {
+                            padding-right: 51px;
+                        }
+
+                        .title {
+                            text-transform: uppercase;
+                            font-weight: bold;
+                        }
+                    }
+                    .modal-bottom {
+                        padding-bottom: 25px;
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.projects-list {
+    border: #eee solid 1px;
+    border-radius: 2px;
+    margin-bottom: 4px;
+    max-height: 204px;
+    overflow: auto;
+
+    .project {
+        display: block;
+        text-decoration: none;
+        padding: 8px;
+        color: #222;
+
+        &:hover {
+            background-color: #003DAE;
+            color: #fff;
+
+            .file {
+                color: rgba(255,255,255,0.6);
+
+                .modified {
+                    color: rgba(255,255,255,0.6);
+                }
+            }
+        }
+
+        .name {
+            .ep;
+            margin-bottom: 4px;
+        }
+        .file {
+            float: none;
+            color: #999;
+            font-size: 10px;
+
+            .filename {
+                .ep;
+                max-width: 80%;
+            }
+
+            .modified {
+                .ep;
+                float: right;
+                max-width: 20%;
+                color: #2360C7;
+            }
+        }
+    }
+}
+
+.dropzone {
+    .cf;
+    padding: 25px;
+    background-color: #eee;
+    border-radius: 5px;
+
+    .dz-default {
+        margin: 5px auto;
+        text-align: center;
+    }
+
+    .dz-preview {
+        position: relative;
+        float: left;
+        max-width: 90px; 
+        margin: 5px;
+        display: flex;
+
+        .dz-image {
+            float: none;
+            background-color: #ccc;
+            width: 90px;
+            height: 90px;
+
+            img {
+                width: 100%;
+            }
+        }
+
+        .dz-details {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(255, 255, 0, 0.9);
+            color: #222;
+            padding: 5px;
+
+            .dz-filename {
+                .ep;
+                font-size: 10px;
+            }
+        }
+
+        .dz-progress {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            float: none;
+            margin: 5px;
+            height: 8px;
+            background-color: rgba(0,0,0,0.2);
+            align-self: center;
+
+            .dz-upload {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 1%;
+                background-color: #222;
+            }
+        }
+
+        .dz-error-message {
+            display: none;
+        }
+
+        .dz-success-mark,
+        .dz-error-mark {
+            display: none;
+            vertical-align: middle;
+            text-align: center;
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            line-height: 20px;
+            border-radius: 100px;
+            color: #fff;
+            bottom: 0;
+            margin: 4px;
+            cursor: pointer;
+        }
+        .dz-success-mark.show,
+        .dz-error-mark.show {
+            display: block;
+        } 
+
+        .dz-success-mark {
+            background-color: #013C7B;      
+        }
+
+        .dz-error-mark {
+            background-color: #f30;
+        }
+    }
+}
+
+.content {
+
+}
+
+
+
+
+// eof

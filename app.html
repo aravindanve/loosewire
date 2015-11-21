@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- /meta -->
+
+    <title>LooseWire Wireframing Tool</title>
+
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet/less" type="text/css" href="less/app.less">
+    <script src="js/less-2.5.3.js"></script>
+</head>
+<body>
+    <div id="menuBar" class="menu-bar">
+        <ul class="menu-items">
+            <li><a id="logo" href="#" class="logo">LooseWire</a></li>
+            <li><a id="newProject" href="#">+ New</a></li>
+            <li><a id="openProject" href="#">Open</a></li>
+            <li><a id="projectProperties" href="#">Project</a></li>
+            <li>
+                <span class="mode">
+                    <span id="modeLabel" class="mode-type">MODE</span>
+                    <span id="modeStatus" class="save-status"></span>
+                </span>
+            </li>
+        </ul>
+        <ul class="menu-items g-right">
+            <li><a id="toggleEditMode" class="btn g-blue" href="#">Edit</a></li>
+            <li><a id="saveChanges" class="btn g-blue" href="#">Save</a></li>
+            <li><a id="saveAsProject" class="btn g-blue" href="#">Save As</a></li>
+            <li><a id="discardChanges" class="btn g-red" href="#">Discard</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        
+    </div>
+    <div id="modal" class="modal">
+        <div class="overlay"></div>
+        <div class="wrapper">
+            <div class="modal-window">
+                <div class="modal-body">
+                    <div class="modal-list">
+                        <!-- modal-item -->
+                        <div id="errorModal" class="modal-item">
+                            <div class="modal-section">
+                                <span class="title">Error</span>
+                            </div>
+                            <div class="modal-section">
+                                <div id="errorModalMessage"></div>
+                            </div>
+                            <div class="modal-bottom">
+                                <a class="btn closeModal" data-default-btn>Okay</a>
+                            </div>
+                        </div>
+                        <!-- /modal-item -->
+                        <!-- modal-item -->
+                        <div id="newProjectModal" class="modal-item">
+                            <div class="modal-section">
+                                <span class="title">New Project</span>
+                            </div>
+                            <div class="modal-section">
+                                <input id="newProjectName" placeholder="Give a name to your Project" autocomplete="off">
+                            </div>
+                            <div class="modal-bottom">
+                                <a id="createProject" class="btn g-blue">Create</a>
+                                <a class="btn closeModal">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- /modal-item -->
+                        <!-- modal-item -->
+                        <div id="openProjectModal" class="modal-item">
+                            <div class="modal-section">
+                                <span class="title">Open Project</span>
+                            </div>
+                            <div class="modal-section">
+                                <div id="selectProjectToOpen" class="projects-list">
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                    <a class="project" href="#">
+                                        <div class="name">My Project</div>
+                                        <div class="file">
+                                            <div class="modified">20 Nov 2015</div>
+                                            <div class="filename">my-project-20151110.lw.json</div>
+                                        </div>
+                                        
+                                    </a>
+
+                                </div>
+                                <form id="uploadDropzone" action="ajax.php?upload=project" class="dropzone" style="margin-top: 20px;">
+                                    <div class="fallback">
+                                        <input name="file" type="file" multiple>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-bottom">
+                                <a class="btn g-blue">Open</a>
+                                <a class="btn closeModal">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- /modal-item -->
+                    </div>
+                    <div class="modal-close"><a id="closeModal" class="btn g-tiny g-block" href="#">&#10006;</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="markupDepot" style="display: none;">
+        <div class="message" data-depot-id="common:message">
+            <span class="message-inner" data-message-text></span>
+        </div>
+        <a class="project" href="#" data-depot-id="projects-list:project">
+            <div class="name" data-project-name>Project Name</div>
+            <div class="file">
+                <div class="modified" data-project-modified>Date Modified</div>
+                <div class="filename" data-project-filename>project-name-20151120.lw.json</div>
+            </div>
+        </a>
+    </div>
+    <script src="js/jquery-1.11.3.js"></script>
+    <script src="js/dropzone.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        Dropzone.options.uploadDropzone = {
+            paramName: 'file', // name
+            maxFilesize: 2, // mb
+            previewTemplate: '' + 
+                '<div class="dz-preview dz-file-preview">' + 
+                    '<div class="dz-icon">' + 
+                    '<div class="dz-image"><img data-dz-thumbnail></div>' + 
+                    '<div class="dz-details">' + 
+                        '<div class="dz-size"><span data-dz-size></span></div>' + 
+                        '<div class="dz-filename"><span data-dz-name></span></div>' + 
+                    '</div>' + 
+                    '<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>' + 
+                    '<div class="dz-error-message"><span data-dz-errormessage></span></div>' + 
+                    '<div class="dz-success-mark">&#10004;</div>' + 
+                    '<div class="dz-error-mark">&#10006;</div>' + 
+                '</div>',
+            error: function (file, message) {
+                $(file.previewElement).find('.dz-error-mark').addClass('show');
+            },
+            uploadprogress: function (file, progress, bytesSent) {
+                $(file.previewElement).find('[data-dz-uploadprogress]').css('width', progress + '%');
+            },
+            success: function (file) {
+                $(file.previewElement).find('.dz-success-mark').addClass('show');
+            },
+            complete: function (file) {
+                // console.log(file);
+            },
+            accept: function(file, done) {
+                done();
+            }
+        };
+    </script>
+</body>
+</html>
