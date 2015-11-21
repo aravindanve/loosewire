@@ -1,0 +1,112 @@
+/* 
+ * styles for loosewire wireframing tool app
+ * by @aravindanve
+*/
+
+/* fonts */
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 300;
+    src: url(../fonts/Lato-Light.ttf);
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/Lato-Regular.ttf);
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: url(../fonts/Lato-Bold.ttf);
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 300;
+    src: url(../fonts/Lato-LightItalic.ttf);
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    src: url(../fonts/Lato-Italic.ttf);
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 700;
+    src: url(../fonts/Lato-BoldItalic.ttf);
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/Montserrat-Regular.ttf);
+}
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    src: url(../fonts/Montserrat-Bold.ttf);
+}
+
+/* fixes */
+
+.cf, .clearfix {
+    &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+    * html & { zoom: 1; } // IE6
+    *:first-child+html & { zoom: 1; } // IE7
+}
+
+.ep, .ellipsis 
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+
+.nl, .nolist {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    &  > li {
+        display: block;
+        float: none;
+    }
+}
+
+.na, .noappearance {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+.cb, .clearboth {
+    float: none;
+    display: block;
+    clear: both;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+

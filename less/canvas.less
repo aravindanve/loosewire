@@ -1,0 +1,399 @@
+/* 
+ * styles for loosewire wireframing tool
+ * by @aravindanve
+*/
+
+/* imports */
+
+@import url(common.less);
+
+*[contenteditable="true"]:focus {
+    outline: #2360C7 solid 1px;
+    background-color: #fff;
+}
+
+.afont() {
+    font-family: 'Lato', arial, sans-serif;
+}
+
+.bfont() {
+    font-family: 'Montserrat', Helvetica, sans-serif;
+}
+
+@grey-text: #888;
+
+.wiring-canvas {
+    padding: 25px;
+
+    position: relative;
+    float: none;
+    background-color: #fff;
+    .cf;
+
+    .screen-wrapper {
+        display: flex;
+        position: relative;
+        float: left;
+        .bfont;
+        color: #222;
+
+        .screen-lhs,
+        .screen-rhs {
+            padding: 25px;
+        }
+
+        .screen-lhs {
+            padding-right: 40px;
+
+            position: relative;
+            float: left;
+            align-self: stretch;
+        }
+
+        .screen-rhs {
+            padding-left: 10px;
+
+            position: relative;
+            float: left;
+        }
+
+        @screen-width: 160px;
+        @screen-height: 120px;
+
+        .screen,
+        .meta,
+        .notes {
+            width: @screen-width;
+
+            position: relative;
+            float: left;
+            clear: both;
+        }
+
+        @screen-color: #c0c6d0;
+        @marker-color: #ABECF4;
+        // @marker-color: rgba(75, 234, 244, 0.5); // overlapping transparencies
+
+        .screen {
+            height: @screen-height;
+            padding: 25px 15px 15px;
+
+            position: relative;
+            float: left;
+            border: @screen-color solid 3px;
+
+            .screen-inner {
+                position: relative;
+                float: none;
+                height: 100%;
+            }
+
+            .address-bar {
+                height: 10px;
+                margin: -25px -15px 15px;
+
+                float: none;
+                border-bottom: @screen-color solid 3px;
+            }
+
+            .screen-art {
+                margin: -15px;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+
+            @marker-size: 5px;
+
+            .screen-markers {
+                margin: -15px;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+
+                .marker {
+                    margin: -@marker-size 0 0 -@marker-size;
+
+                    position: absolute;
+                    height: 0;
+                    width: 0;
+                    top: 50%;
+                    left: 50%;
+
+                    border-radius: 100px;
+                    border: @marker-color solid @marker-size;
+
+                    @marker-offset: 20%;
+
+                    &.upper-left {
+                        top: @marker-offset;
+                        left: @marker-offset;
+                    }
+
+                    &.upper-right {
+                        top: @marker-offset;
+                        left: (100% - @marker-offset);
+                    }
+
+                    &.center {
+                        top: 50%;
+                        left: 50%;
+                    }
+
+                    &.lower-right {
+                        top: (100% - @marker-offset);
+                        left: (100% - @marker-offset);
+                    }
+
+                    &.lower-left {
+                        top: (100% - @marker-offset);
+                        left: @marker-offset;
+                    }
+
+                    .marker-line-vert,
+                    .marker-line-horiz {
+                        position: absolute;
+                    }
+
+                    @marker-line-length: (@screen-width * (unit(@marker-offset) / 100)) + 2px;
+
+                    .marker-line-horiz {
+                        width: @marker-line-length + 5px;
+                        margin-top: -1px;
+
+                        top: 0;
+                        height: 0;
+                        border: @marker-color solid 1px;
+                    }
+
+                    &.upper-left .marker-line-horiz, 
+                    &.lower-left .marker-line-horiz {
+                        width: (@screen-width - @marker-line-length) + 5px;
+                        margin-top: -1px;
+
+                        top: 0;
+                        height: 0;
+                        border: @marker-color solid 1px;
+                    }
+
+                    &.center .marker-line-horiz {
+                        width: (@screen-width - (@screen-width * 0.5)) + 5px;
+                        margin-top: -1px;
+
+                        top: 0;
+                        height: 0;
+                        border: @marker-color solid 1px;
+                    }
+
+                    &.upper-left .marker-line-vert {
+                        height: 15px;
+                        margin-left: -1px;
+
+                        bottom: 0;
+                        width: 0;
+                        border: @marker-color solid 1px;
+                    }
+
+                    &.upper-left .marker-line-horiz {
+                        margin-top: -15px;
+                    }
+
+                    &.lower-left .marker-line-vert {
+                        height: 15px;
+                        margin-left: -1px;
+
+                        top: 0;
+                        width: 0;
+                        border: @marker-color solid 1px;
+                    }
+
+                    &.lower-left .marker-line-horiz {
+                        top: -2px;
+                        margin-top: 15px;
+                    }
+                }
+            }
+        }
+
+        .meta {
+            margin-top: 5px;
+            
+            font-size: 0.65em;
+
+            .title {
+                text-transform: uppercase;
+            }
+
+            .description {
+                color: @grey-text;
+            }
+
+            .url {
+                color: #2360C7;
+            }
+        }
+
+        .notes {
+            margin-top: 10px;
+            padding-top: 5px;
+            
+            font-size: 0.8em;
+            border-top: #eee solid 1px;
+        }
+
+        .marker-connectors {
+            margin: 25px 0 35px;
+            width: 40px;
+
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ff0;
+        }
+
+        .elements {
+            width: 260px;
+
+            position: relative;
+            float: none;
+            font-size: 0.75em;
+
+            .group {
+                position: relative;
+                margin-bottom: 10px;
+                margin-left: -10px;
+                padding-left: 10px;
+
+                float: none;
+                clear: both;
+                border-left: @marker-color solid 2px;
+            }
+
+            .group:before,
+            .group:after {
+                width: 6px;
+                height: 6px;
+                
+                content: '';
+                position: absolute;
+                left: 0;
+            }
+
+            .group:before {
+                top: 0;
+                border-top: @marker-color solid 2px;
+            }
+
+            .group:after {
+                bottom: 0;
+                border-bottom: @marker-color solid 2px;
+            }
+
+            @icon-padding: 1.6em;
+
+            .element {
+                margin-bottom: 4px;
+
+                float: none;
+                clear: both;
+
+                &:hover {
+                    background-color: #f6f6f6;
+                }
+
+                .icon, .title {
+                    min-height: @icon-padding;
+
+                    line-height: @icon-padding;
+                }
+
+                .icon {
+                    width: @icon-padding; 
+
+                    float: left;
+                    text-align: center;
+                    background-color: #555;
+                    border-radius: 100px;
+                    color: #fff;
+
+                    &[data-type="action"] {
+                        background-color: #FF4D00;
+                    }
+
+                    &[data-type="form"] {
+                        background-color: #6DEF36;
+                    }
+
+                    &[data-type="data"] {
+                        background-color: #24ACF4;
+                    }
+
+                    &[data-type="enlarged"] {
+                        background-color: #FDCE00;
+                    }
+                }
+
+                .title {
+                    margin-left: 20px;
+
+                    float: none;
+                    text-transform: uppercase;
+                }
+
+                .description {
+                    margin-top: 2px;
+
+                    float: none;
+                    clear: both;
+                    color: @grey-text;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// eof
