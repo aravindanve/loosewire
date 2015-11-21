@@ -52,13 +52,7 @@
     l.modalActive = l.modalActive || false;
 
     l.projectOpen = l.projectOpen || false;
-
-    __loadedProject = {
-        _meta: null,
-        _filename: null,
-        project: null,
-    }; 
-
+    
     // functions
 
     var undef,
