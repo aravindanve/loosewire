@@ -44,7 +44,7 @@ class Response
         isset($data['output']) or $data['output'] = (
             ob_get_level()? ob_get_clean() : '');
 
-        echo json_encode($data);
+        echo json_encode($data, JSON_PRETTY_PRINT);
         die;
     }
 }
@@ -215,11 +215,19 @@ class Project {
         return ['projectsList' => $_passed_files];
     }
 
-    static function overwrite() {
-
+    static function getproject($filename) 
+    {
+        $filepath = Register::$project_folder.$filename;
+        if (self::_get_project_meta($filepath)) {
+            $json = self::_get_project($filepath);
+            return ['filename' => $filename, 'file' => $json];
+        } else {
+            return ['error' => 'Could not load project'];
+        }
     }
 
-    static function save($overwrite = false) {
+    static function save($overwrite = false) 
+    {
         if (!self::_check_valid_filename($_POST['filename'])) {
             return ['error' => 'Invalid filename'];
         }

@@ -33,6 +33,15 @@ if (Request::is_type('list')) {
     }
 }
 
+// list projects
+if (Request::is_type('load', ['filename'])) {
+    if ($result = Project::getproject()) {
+        Response::exit_with($result);
+    } else {
+        Response::exit_with(['error' => 'Error fetching projects']);
+    }
+}
+
 // save project
 if (Request::is_type('save', ['file', 'filename'])) {
     $overwrite = Request::has_attr('overwrite', 'true')? true : false;

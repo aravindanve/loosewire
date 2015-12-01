@@ -1,0 +1,311 @@
+/* 
+ * styles for loosewire flow tool
+ * lw-app.less
+ * by @aravindanve
+ *
+ */
+
+/* imports */
+
+@import url(common.less);
+@import url(lw-canvas.less);
+@import url(lw-dropdown.less);
+
+/* func */
+
+.afont() {
+    font-family: 'Lato', arial, sans-serif;
+}
+
+.bfont() {
+    font-family: 'Montserrat', Helvetica, sans-serif;
+}
+
+/* styles */
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    // background-color: #eee;
+    background-color: #222;
+    font-size: 14px;
+    .afont;
+}
+
+@toolbar-height: 30px;
+@guide-height: 20px;
+@canvas-padding: 100px;
+@std-box-edge: 520px;
+@guide-font-size: 13px;
+
+@pg-min-width: @std-box-edge;
+@pg-min-height: @std-box-edge;
+@cell-width: @std-box-edge;
+@cell-min-height: @std-box-edge;
+
+@top-clearance: @toolbar-height + @guide-height;
+
+@toolbar-color: #222;
+@guide-color: @toolbar-color;
+@guide-even-color: #333;
+@guide-odd-color: #444;
+@viewport-color: #222;
+@guide-outline-color: #666;
+
+
+@toolbar-color: #222;
+@guide-color: @toolbar-color;
+@guide-even-color: #222;
+@guide-odd-color: #222;
+@viewport-color: #222;
+@guide-outline-color: #666;
+
+body {
+    background-color: #222;
+}
+
+.lw-toolbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: @toolbar-height;
+    color: #fff;
+
+    &.g-edit {
+        background-color: #013C7B;
+    }
+
+    ul.menu-items {
+        float: left;
+        text-transform: uppercase;
+        font-size: 12px;
+        user-select: none;
+        -moz-user-select: none;
+        .nl;
+
+        &.g-right {
+            float: right;
+        }
+
+        & > li {
+            float: left;
+
+            a, .mode {
+                display: block;
+                text-decoration: none;
+                color: #fff;
+                padding: 8px 10px;
+            }
+
+            a {
+                &:hover {
+                    background-color: rgba(0,0,0,0.2);
+                }
+
+                &.logo {
+                    font-weight: bold;
+                    color: #FF64BF;
+                }
+            }
+
+            .mode {
+                text-transform: uppercase;
+                background-color: rgba(255,255,255,0.4);
+
+                .save-status {
+                    color: #ff0;
+                }
+            }
+        }
+    }
+}
+
+.lw-viewport {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: @top-clearance 0 0 @guide-height;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    background-color: @viewport-color;
+    overflow: scroll;
+
+    .lw-wrapper {
+        position: relative;
+        float: none;
+    }
+
+    .lw-canvas {
+        padding: @canvas-padding;
+    }
+}
+
+.lw-guides-corner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: @guide-height;
+    height: @guide-height;
+    margin: @toolbar-height 0 0 0;
+    background-color: @guide-color;
+    z-index: 9000;
+
+    .lw-col-corner {
+        position: absolute;
+        display: none;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-color: @guide-color;
+        border-right: @guide-outline-color solid 1px;
+    }
+
+    .lw-row-corner {
+        position: absolute;
+        display: none;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: @guide-color;
+        border-bottom: @guide-outline-color solid 1px;
+    }
+}
+
+.lw-col-guides {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: @guide-height;
+    margin: @toolbar-height 0 0 @guide-height;
+    background-color: @guide-color;
+    z-index: 9000;
+    overflow: hidden;
+
+    .col-guide-wrapper {
+        .cf;
+        position: relative;
+        display: table;
+        border-collapse: collapse;
+        float: none;
+        margin: 0 auto;
+        max-height: @guide-height;
+    }
+
+    .col-guide-padding {
+        display: block;
+        margin: 0 @canvas-padding;
+    }
+
+    .col-guide-trow {
+        display: table-row-group;
+    }
+
+    .col-guide {
+        position: relative;
+        display: table-cell;
+        vertical-align: top;
+        border: transparent solid 1px;
+        border-top-color: @guide-outline-color;
+        border-bottom-width: 0;
+        border-right: @guide-outline-color solid 1px; // last top right px
+        border-left: @guide-outline-color solid 1px;
+        // width: @std-box-edge;
+        height: @guide-height - 1px;
+        text-align: center;
+        line-height: @guide-height;
+        .bfont;
+        font-size: @guide-font-size;
+        color: #eee;
+        // background-color: @guide-odd-color;
+        background-color: @guide-outline-color;
+
+        &:nth-child(even) {
+            // background-color: @guide-even-color;
+
+            .col-guide-inner {
+                background-color: @guide-even-color;
+            }
+        }
+
+        .col-guide-inner {
+            float: none;
+            width: 100%;
+            text-align: center;
+            width: @std-box-edge;
+            line-height: @guide-height - 1px;
+            background-color: @guide-odd-color;
+        }
+    }
+}
+
+.lw-row-guides {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: @guide-height;
+    margin: @top-clearance 0 0 0;
+    background-color: @guide-color;
+    z-index: 9000;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+
+    .row-guide-wrapper {
+        .cf;
+        position: absolute;
+        // top: 0;
+        left: 0;
+        right: 0;
+        // position: relative;
+        // float: none;
+        padding: @canvas-padding 0;
+        margin: auto;
+        align-self: center;
+    }
+
+    .row-guide {
+        position: relative;
+        display: flex;
+        float: left;
+        width: @guide-height;
+        height: @std-box-edge;
+        border: @guide-outline-color solid 1px;
+        border-right-width: 0;
+        border-bottom-color: transparent;
+        text-align: center;
+        line-height: @guide-height;
+        .bfont;
+        font-size: @guide-font-size;
+        color: #eee;
+        background-color: @guide-odd-color;
+
+        &:nth-child(even) {
+            background-color: @guide-even-color;
+        }
+
+        &:last-child {
+            border-bottom-color: @guide-outline-color;
+        }
+
+        .row-guide-inner {
+            float: none;
+            width: 100%;
+            align-self: center;
+            text-align: center;
+            line-height: 1;
+            padding: 0 4px;
+            .fw;
+        }
+    }
+}
+
+
+// eof

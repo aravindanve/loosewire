@@ -1,0 +1,13 @@
+{
+    "_meta": {
+        "name": "New Project",
+        "created": "2015-11-21T20:17:12+00:00",
+        "modified": "2015-11-21T20:17:12+00:00",
+        "filetype": "loosewire project json",
+        "getapp": "http:\/\/github.com\/aravindanve\/loosewire",
+        "savestamp": "7fa4a2d23ab1b8c9cdbd3b680d3cb64a18d08c6e2ca9db164c3b311f5ade7bb0"
+    },
+    "project": {
+        "canvas": []
+    }
+}

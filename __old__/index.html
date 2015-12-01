@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Wireframing Tool</title>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet/less" type="text/css" href="less/style.less">
+    <script src="js/less-2.5.3.js"></script>
+</head>
+<body>
+    <div class="wiring-canvas">
+        <div class="screen-wrapper">
+            <div class="screen-lhs">
+                <div class="screen" data-type="window">
+                    <div class="address-bar"></div>
+                    <div class="screen-inner">
+                        <div class="screen-grid">
+                            <div class="screen-art"></div>
+                            <div class="screen-markers">
+                                <div class="marker upper-left">
+                                    <div class="marker-line-vert"></div>
+                                    <div class="marker-line-horiz"></div>
+                                </div>
+                                <div class="marker upper-right">
+                                    <div class="marker-line-horiz"></div>
+                                </div>
+                                <div class="marker center">
+                                    <div class="marker-line-horiz"></div>
+                                </div>
+                                <div class="marker lower-right">
+                                    <div class="marker-line-horiz"></div>
+                                </div>
+                                <div class="marker lower-left">
+                                    <div class="marker-line-vert"></div>
+                                    <div class="marker-line-horiz"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="meta">
+                    <div class="title" contenteditable="true">screen 1</div>
+                    <div class="description" contenteditable="true">this is a short description about the screen</div>
+                    <div class="url" contenteditable="true">app/messages</div>
+                </div>
+                <div class="notes">
+                    <div class="note" contenteditable="true">this is a note</div>
+                    <div class="note" contenteditable="true">this is another note</div>
+                </div>
+                <div class="marker-connectors"></div>
+            </div>
+            <div class="screen-rhs">
+                <div class="elements">
+                    <div class="group upper-left">
+                        <div class="element">
+                            <div class="icon" data-type="action">A</div>
+                            <div class="title" contenteditable="true" contenteditable="true">this is an action</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="data">D</div>
+                            <div class="title" contenteditable="true">this is data</div>
+                            <div class="description" contenteditable="true">this is a short description about the action. this is a short description about the action. this is a short description about the action</div>
+                        </div>
+                    </div>
+                    <div class="group upper-right">
+                        <div class="element">
+                            <div class="icon" data-type="form">F</div>
+                            <div class="title" contenteditable="true">this is an action. this is an action. this is an action. this is an action. this is an action. this is an action. this is an action. this is an action. this is an action. this is an action</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="action">A</div>
+                            <div class="title" contenteditable="true">this is an action</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                    </div>
+                    <div class="group center">
+                        <div class="element">
+                            <div class="icon" data-type="form">F</div>
+                            <div class="title" contenteditable="true">this is a form element</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="form">F</div>
+                            <div class="title" contenteditable="true">this is an action</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                    </div>
+                    <div class="group lower-right">
+                        <div class="element">
+                            <div class="icon" data-type="data">D</div>
+                            <div class="title" contenteditable="true">this is data</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="action">A</div>
+                            <div class="title" contenteditable="true">this is an action</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="enlarged">E</div>
+                            <div class="title" contenteditable="true">enlarged view</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                    </div>
+                    <div class="group lower-left">
+                        <div class="element">
+                            <div class="icon" data-type="data">D</div>
+                            <div class="title" contenteditable="true">this is data</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                        <div class="element">
+                            <div class="icon" data-type="form">F</div>
+                            <div class="title" contenteditable="true">this is a form element</div>
+                            <div class="description" contenteditable="true">this is a short description about the action</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="actions"></div>
+        </div>
+        <div class="screen" data-type="modal">
+            <div class="address-bar"></div>
+        </div>
+        <div class="screen" data-type="popup">
+            <div class="address-bar"></div>
+        </div>
+    </div>
+    <script src="js/jquery-1.11.3.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
