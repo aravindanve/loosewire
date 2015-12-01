@@ -1,16 +1,15 @@
 /* 
- * styles for loosewire wireframing tool
+ * styles for loosewire flow tool
+ * lw-canvas.less
  * by @aravindanve
-*/
+ *
+ */
 
 /* imports */
 
 @import url(common.less);
 
-*[contenteditable="true"]:focus {
-    outline: #2360C7 solid 1px;
-    background-color: #fff;
-}
+/* func */
 
 .afont() {
     font-family: 'Lato', arial, sans-serif;
@@ -20,29 +19,170 @@
     font-family: 'Montserrat', Helvetica, sans-serif;
 }
 
+/* styles */
+
+*[contenteditable="true"] {
+    &:focus {
+        outline: rgba(0, 136, 255, 0.6) solid 1px;
+        // outline: #2360C7 solid 1px;
+        background-color: #fff !important;   
+        text-transform: none !important;
+    }
+
+    &:hover {
+        background-color: #f6f6f6;
+    }
+}
+
+*[data-has-dyntext] {
+    .fw;
+}
+
 @grey-text: #888;
 
-.wiring-canvas {
-    padding: 25px;
-
+.lw-canvas {
+    padding: 80px;
+    margin: auto;
     position: relative;
     float: none;
-    background-color: #fff;
     .cf;
 
-    .screen-wrapper {
+    .lw-page {
+        min-width: @pg-min-width;
+        min-height: @pg-min-height;
+        background-color: #fff;
+        .cf;
+
+        .lw-grid {
+            display: table;
+            border-collapse: collapse;
+            position: relative;
+
+            .lw-row {
+                display: table-row-group;
+            }
+
+            .lw-cell {
+                position: relative;
+                display: table-cell;
+                vertical-align: top;
+                width: @cell-width;
+                height: @cell-min-height;
+                border: #eee solid 1px;
+
+                .lw-cell-options + a.add-wirescreen {
+                    margin-top: 25px;
+                }
+
+                a.add-wirescreen {
+                    margin: -1px 0 0 -1px;
+                    font-size: 20px;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    display: flex;
+                    text-align: center;
+                    text-decoration: none;
+                    cursor: pointer;
+                    color: #bbb;
+
+                    &:hover {
+                        background-color: #eee;
+                        color: #222;
+                    }
+
+                    span {
+                        align-self: center;
+                        margin: auto;
+                    }
+                }
+
+                .lw-cell-options {
+                    position: relative;
+                    .bfont;
+                    text-transform: uppercase;
+                    font-size: 11px;
+                    .cf;
+
+                    .lw-dropdown {
+                        float: right;
+
+                        a.dropdown-label {
+                            display: block;
+                            padding: 0 8px;
+                            line-height: 25px;
+
+                            &:hover {
+                                background-color: #eee;
+                            }
+                        }
+
+                        ul.dropdown-menu {
+                            margin-top: 0;
+                            padding: 2px 0;
+                            background-color: #111;
+                            border-color: #000;
+                            color: #fff;
+                            text-transform: none;
+                            border-radius: 1px 1px 3px 3px;
+
+                            & > li {
+                                &.divider {
+                                    border-color: #333;
+                                    margin: 2px 0;
+
+                                    &.g-label {
+                                        font-size: 9px;
+                                        text-transform: uppercase;
+                                        color: #999;
+                                    }
+                                }
+
+                                & > a {
+                                    &:hover {
+                                        background-color: #0088FF;
+                                    }
+                                }
+                            }
+                        }
+
+                        &.open {
+                            a.dropdown-label {
+                                background-color: #222;
+                                color: #fff;
+                            }
+                        }
+
+                        &.g-right {
+                            ul.dropdown-menu {
+                                border-top-left-radius: 3px;
+                            }
+                        }
+                    }
+                }
+
+                .lw-cell-content {
+                    .cf;
+                }
+            }
+        }
+    }
+
+    .lw-wirescreen {
         display: flex;
         position: relative;
         float: left;
         .bfont;
         color: #222;
 
-        .screen-lhs,
-        .screen-rhs {
+        .wirescreen-lhs,
+        .wirescreen-rhs {
             padding: 25px;
         }
 
-        .screen-lhs {
+        .wirescreen-lhs {
             padding-right: 40px;
 
             position: relative;
@@ -50,39 +190,52 @@
             align-self: stretch;
         }
 
-        .screen-rhs {
+        .wirescreen-rhs {
             padding-left: 10px;
 
             position: relative;
             float: left;
         }
 
-        @screen-width: 160px;
-        @screen-height: 120px;
+        a.add-wirescreen-item {
+            display: block;
+            float: none;
+            padding: 3px 1px;
+            text-decoration: none;
+            cursor: pointer;
+            color: #0088FF;
 
-        .screen,
+            &:hover {
+                background-color: #eee;
+            }
+        }
+
+        @wirescreen-width: 160px;
+        @wirescreen-height: 120px;
+
+        .wirescreen,
         .meta,
         .notes {
-            width: @screen-width;
+            width: @wirescreen-width;
 
             position: relative;
             float: left;
             clear: both;
         }
 
-        @screen-color: #c0c6d0;
+        @wirescreen-color: #c0c6d0;
         @marker-color: #ABECF4;
         // @marker-color: rgba(75, 234, 244, 0.5); // overlapping transparencies
 
-        .screen {
-            height: @screen-height;
+        .wirescreen {
+            height: @wirescreen-height;
             padding: 25px 15px 15px;
 
             position: relative;
             float: left;
-            border: @screen-color solid 3px;
+            border: @wirescreen-color solid 3px;
 
-            .screen-inner {
+            .wirescreen-inner {
                 position: relative;
                 float: none;
                 height: 100%;
@@ -93,10 +246,10 @@
                 margin: -25px -15px 15px;
 
                 float: none;
-                border-bottom: @screen-color solid 3px;
+                border-bottom: @wirescreen-color solid 3px;
             }
 
-            .screen-art {
+            .wirescreen-art {
                 margin: -15px;
 
                 position: absolute;
@@ -108,7 +261,7 @@
 
             @marker-size: 5px;
 
-            .screen-markers {
+            .wirescreen-markers {
                 margin: -15px;
 
                 position: absolute;
@@ -161,7 +314,7 @@
                         position: absolute;
                     }
 
-                    @marker-line-length: (@screen-width * (unit(@marker-offset) / 100)) + 2px;
+                    @marker-line-length: (@wirescreen-width * (unit(@marker-offset) / 100)) + 2px;
 
                     .marker-line-horiz {
                         width: @marker-line-length + 5px;
@@ -174,7 +327,7 @@
 
                     &.upper-left .marker-line-horiz, 
                     &.lower-left .marker-line-horiz {
-                        width: (@screen-width - @marker-line-length) + 5px;
+                        width: (@wirescreen-width - @marker-line-length) + 5px;
                         margin-top: -1px;
 
                         top: 0;
@@ -183,7 +336,7 @@
                     }
 
                     &.center .marker-line-horiz {
-                        width: (@screen-width - (@screen-width * 0.5)) + 5px;
+                        width: (@wirescreen-width - (@wirescreen-width * 0.5)) + 5px;
                         margin-top: -1px;
 
                         top: 0;
@@ -245,6 +398,10 @@
             
             font-size: 0.8em;
             border-top: #eee solid 1px;
+
+            .note {
+                margin-bottom: 2px;
+            }
         }
 
         .marker-connectors {
@@ -255,11 +412,12 @@
             top: 0;
             right: 0;
             bottom: 0;
-            background-color: #ff0;
+            /* background-color: #ff0; */
         }
 
+        @wirescreen-right-width: 260px;
         .elements {
-            width: 260px;
+            width: @wirescreen-right-width;
 
             position: relative;
             float: none;
@@ -303,10 +461,6 @@
 
                 float: none;
                 clear: both;
-
-                &:hover {
-                    background-color: #f6f6f6;
-                }
 
                 .icon, .title {
                     min-height: @icon-padding;
@@ -358,42 +512,6 @@
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // eof

@@ -293,6 +293,9 @@
             complete: complete || function (xhr, status) {}
         });
     },
+    loadRemoteProject = function (filename) {
+
+    },
     loadProject = function (filename, fileobj) {
         if (!isNonEmptyString(filename)) {
             return false;
@@ -386,13 +389,15 @@
         activateModal($newProjectModal);
     },
     refreshOpenProjectModal = function (next) {
-        makeRequest('list', null , function (resp) {
+        makeRequest('list', null, function (resp) {
             if (!resp.error) {
                 $selectProjectToOpenList.empty();
                 for (i in resp.projectsList) {
                     var $listItem = newFromDepot(
                         'projects-list:project');
                     $listItem
+                        .attr('data-project-load', 
+                            resp.projectsList[i].filename)
                         .find('[data-project-name]')
                         .empty()
                         .append(resp.projectsList[i].name)
@@ -405,6 +410,9 @@
                         .empty()
                         .append(resp.projectsList[i].filename)
                         .end()
+                        .on('click', function (e) {
+                            loadRemoteProject($(this));
+                        })
                         .appendTo($selectProjectToOpenList);
                 }
                 if (!$selectProjectToOpenList.children().length) {

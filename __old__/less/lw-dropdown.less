@@ -1,0 +1,85 @@
+/* 
+ * styles for loosewire flow tool
+ * lw-dropdown.less
+ * by @aravindanve
+*/
+
+/* imports */
+
+@import url(common.less);
+
+/* styles */
+
+.lw-dropdown {
+    position: relative;
+
+    a.dropdown-label {
+        text-decoration: none;
+        color: #222;
+    }
+
+    ul.dropdown-menu {
+        z-index: 5000;
+        .nl;
+        padding: 5px 0;
+        min-width: 120px;
+        position: absolute;
+        left: 0;
+        right: auto;
+        background-color: #fff;
+        border: #ddd solid 1px;
+        margin-top: 2px;
+        display: none;
+
+        & > li {
+            display: block;
+            float: none;
+            & > a {
+                display: block;
+                float: none;
+                padding: 6px 8px;
+                cursor: pointer;
+                white-space: nowrap;
+
+                &:hover {
+                    background-color: #eee;
+                }
+            }
+
+            &.divider {
+                float: none;
+                margin: 5px 0;
+                border-bottom: #eee solid 1px;
+
+                &.g-label {
+                    font-weight: bold;
+                    font-size: 12px;
+                    padding: 6px 8px;
+
+                    &:first-child {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    &.g-right {
+        ul.dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+    }
+
+    &.open {
+        a.dropdown-label {
+            color: #ddd;
+        }
+        ul.dropdown-menu {
+            display: block;
+        }
+    }
+}
+
+
+// eof

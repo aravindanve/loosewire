@@ -1,3 +1,3 @@
 # LooseWire Wireframing Tool
 
-Written in JavaScript
+Written in jQuery & PHP
