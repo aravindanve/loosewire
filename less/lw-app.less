@@ -292,7 +292,20 @@ body {
         }
 
         &:last-child {
-            border-bottom-color: @guide-outline-color;
+            // border-bottom-color: @guide-outline-color;
+
+            // hack to fix table cell extra px
+            border-bottom-width: 0;
+            &:after {
+                content: '';
+                position: absolute;
+                // bottom: -2px;
+                bottom: -1px;
+                left: -1px;
+                right: -1px;
+                height: 1px;
+                background-color: @guide-outline-color;
+            }
         }
 
         .row-guide-inner {
