@@ -44,6 +44,10 @@
         return selectors.join(', ');
     };
 
+    function randStr() {
+        return Math.random().toString(36).slice(2);
+    }
+
     function toBaseAlpha(num) {
         num = num > 0? num - 1 : 0; 
         if (num < _alpha.length) {
@@ -180,7 +184,7 @@
         // add resize listener
         $cell.onResize(function (e) {
             $(document).trigger(
-                'lw.cell.resized', [$cell.get(0)]);
+                'lw.cell.resized', [this]);
         });
         resizeGrid();
     }
@@ -191,7 +195,7 @@
 
     function evalEventBurst(key, fn) {
         return window.setTimeout(function () {
-            console.log('inside evalEventBurst ' + Math.random().toString(36).slice(2));
+            // console.log('inside evalEventBurst ' + randStr());
             if (!(_eventBursts[key] && _eventBursts[key].length)) {
                 return;
             }
@@ -200,24 +204,25 @@
                 var _context = _eventBursts[key].pop();
                 if (queue.indexOf(_context) < 0) {
                     queue.push(_context);
-                    console.log('found unique event ' + Math.random().toString(36).slice(2));
+                    // console.log('found unique event ' + randStr());
                 }
             }
-            console.log('executing event handler ' + Math.random().toString(36).slice(2));
+            // console.log('executing event handler ' + randStr());
             queue.forEach(fn); // fn(context, index, array)
         }, 10);
     }
 
     function cellResized(e, context) {
-        console.log('cell resized ' + Math.random().toString(36).slice(2));
+        // console.log('cell resized ' + randStr());
         if ('undefined' === typeof _eventBursts.cellResized) {
             _eventBursts.cellResized = [];
         }
         rowContext = $(context).parents('[data-row]').get(0);
+        // console.log(context);
         _eventBursts.cellResized.push(rowContext)
         evalEventBurst('cellResized', function (rowElem) {
-            console.log('resizing row ' + Math.random().toString(36).slice(2));
-            console.log(rowElem);
+            // console.log('resizing row ' + randStr());
+            // console.log(rowElem);
             resizeRowGuide(rowElem);
         });
     }
@@ -270,17 +275,10 @@
     }
 
     function resizeRowGuide(rowElem) {
-        console.log('RESIZE');
-        console.log(getGrid().find('[data-row]')
-            .get());
-        console.log(getGrid().find('[data-row]')
-            .get().indexOf(rowElem));
-
+        // console.log('RESIZE');
+        // console.log(rowElem);
         var num = getGrid().find('[data-row]')
             .get().indexOf(rowElem);
-
-        console.log(getRowGuide().find('[data-guide-row]')
-            .eq(num));
 
         getRowGuide().find('[data-guide-row]')
             .eq(num).css('height', $(rowElem).height());

@@ -92,8 +92,6 @@
         for (var i = 0; i < $selected.length; i++) {
             addResizeListerner($selected.get(i), next);
         }
-        console.log('attaching');
-        console.log($(this)[0].__resizeListeners);
     };
 
     $.fn.offResize = function (next) {
