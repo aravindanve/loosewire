@@ -87,18 +87,20 @@
 
     // extend jQuery
 
-    $.fn.onResize = function (next) {
+    $.fn.onResize = function (callback) {
         $selected = $(this);
         for (var i = 0; i < $selected.length; i++) {
-            addResizeListerner($selected.get(i), next);
+            addResizeListerner($selected.get(i), callback);
         }
+        return $(this);
     };
 
-    $.fn.offResize = function (next) {
+    $.fn.offResize = function (callback) {
         $selected = $(this);
         for (var i = 0; i < $selected.length; i++) {
-            removeResizeListener($selected.get(i), next);
+            removeResizeListener($selected.get(i), callback);
         }
+        return $(this);
     };
 
 }(jQuery, window, document);

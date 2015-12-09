@@ -41,10 +41,12 @@ body {
 @std-box-edge: 520px;
 @guide-font-size: 13px;
 
-@pg-min-width: @std-box-edge;
-@pg-min-height: @std-box-edge;
 @cell-width: @std-box-edge;
-@cell-min-height: @std-box-edge;
+// @cell-min-height: @std-box-edge;
+@cell-min-height: 250px;
+
+@pg-min-width: @std-box-edge;
+@pg-min-height: @cell-min-height;
 
 @top-clearance: @toolbar-height + @guide-height;
 
@@ -276,7 +278,7 @@ body {
         display: flex;
         float: left;
         width: @guide-height;
-        height: @std-box-edge;
+        height: @cell-min-height;
         border: @guide-outline-color solid 1px;
         border-right-width: 0;
         border-bottom-color: transparent;
@@ -286,6 +288,7 @@ body {
         font-size: @guide-font-size;
         color: #eee;
         background-color: @guide-odd-color;
+        border-bottom-width: 0;
 
         &:nth-child(even) {
             background-color: @guide-even-color;

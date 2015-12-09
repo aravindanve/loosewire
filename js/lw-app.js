@@ -6,9 +6,14 @@
  */
 
 +function ($, window, document) {
+    'use strict';
 
-    if (!$.fn.onResize) {
-        console.log('This requires lw-onresize.js');
+    if ('function' !== typeof window.Raphael) {
+        console.log('This requires raphaeljs library');
+    }
+
+    if ('function' !== typeof $.fn.onResize) {
+        console.log('This requires lw-onresize.js extention');
     }
 
     var DEBUG = true;
@@ -24,7 +29,8 @@
         _eventBursts = {},
         _alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-    var rAF = window.requestAnimationFrame,
+    var Raphael = window.Raphael,
+        rAF = window.requestAnimationFrame,
         cAF = window.cancelAnimationFrame;
 
     // functions
@@ -58,6 +64,8 @@
             '' + _alpha[num%_alpha.length];
         } 
     }
+
+    // register access
 
     function getViewport() {
         if (!(_register.viewport instanceof $)) {
@@ -153,12 +161,186 @@
             ) > _register.canvasPaddingTop;
     }
 
+    // get elements
+
+    // 
+
+    // extentions
+
+    $.fn.floatWidth = function () {
+        return $(this)[0].getBoundingClientRect().width;
+    };
+
+    $.fn.floatHeight = function () {
+        return $(this)[0].getBoundingClientRect().height;
+    };
+
+    $.fn.assocEvent = function (onEvent, doEvent) {
+        $(this).on(onEvent, function (e) {
+            $(document).trigger(doEvent, e);
+        });
+        return $(this);
+    };
+
+    Raphael.fn.newMarker = function () {
+        var marker = this.circle.apply(this, arguments);
+        marker.node.setAttribute('sdata:marker', '');
+        return marker;
+    }; 
+
+    Raphael.fn.newConnector = function () {
+        var connector = this.rect.apply(this, arguments);
+        connector.node.setAttribute('sdata:connector', '');
+        return connector;
+    };
+
     // classes
 
+    // SVGPathString
+
+    // M  moveto (x y)+
+    // Z  closepath (none)
+    // L  lineto (x y)+
+    // H  horizontal lineto x+
+    // V  vertical lineto y+
+    // C  curveto (x1 y1 x2 y2 x y)+
+    // S  smooth curveto (x2 y2 x y)+
+    // Q  quadratic Bézier curveto (x1 y1 x y)+
+    // T  smooth quadratic Bézier curveto (x y)+
+    // A  elliptical arc (rx ry x-axis-rotation large-arc-flag sweep-flag x y)+
+    // R  Catmull-Rom curveto*    x1 y1 (x y)+
+
+    // * “Catmull-Rom curveto” is a not standard SVG command and added in 2.0 
+    // to make life easier. Note: there is a special case when path consist of
+    // just three commands: “M10,10R…z”. In this case path will smoothly
+    // connects to its beginning. 
+
+    function SVGPathString() {
+        this.pathString = '';
+    }
+
+    SVGPathString.prototype = {
+        toString: function (x, y) {
+            return this.pathString;
+        },
+        _cmdStr: function (cmd) {
+            var pathArgs = '';
+            for (var i = 1; i < arguments.length; i++) {
+                pathArgs += ',' + (arguments[i] + 0).toFixed(4);
+            }
+            return cmd + pathArgs.replace(/^\,/, '');
+        },
+        moveTo: function (x, y) {
+            this.pathString += this._cmdStr('M', x, y);
+            return this;
+        },
+        closePath: function () {
+            this.pathString += this._cmdStr('Z');
+            return this;
+        },
+        lineTo: function (x, y, delta) {
+            var args = [], _delta = false;
+            for (var i = 0; i < arguments.length; i++) {
+                if (true === arguments[i]) {
+                    _delta = true;
+                } else {
+                    args.push(arguments[i]);
+                }
+            }
+            this.pathString += this._cmdStr.apply(
+                this, [_delta? 'l': 'L'].concat(args));
+            return this;
+        },
+        horizontalLineTo: function (x, delta) {
+            this.pathString += this._cmdStr(
+                delta? 'h': 'H', x);
+            return this;
+        },
+        verticalLineTo: function (y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 'v': 'V', y);
+            return this;
+        },
+        curveTo: function (x1, y1, x2, y2, x, y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 'c': 'C', x1, y1, x2, y2, x, y);
+            return this;
+        },
+        smoothCurveTo: function (x2, y2, x, y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 's': 'S', x2, y2, x, y);
+            return this;
+        },
+        quadraticBezierCurveTo: function (x1, y1, x, y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 'q': 'Q', x1, y1, x, y);
+            return this;
+        },
+        smoothQuadraticBezierCurveTo: function (x, y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 't': 'T', x, y);
+            return this;
+        },
+        ellipticalArc: function (rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y, delta) {
+            this.pathString += this._cmdStr(
+                delta? 'a': 'A', rx, ry, xAxisRotation, 
+                largeArcFlag, sweepFlag, x, y);
+            return this;
+        }
+    };
+
     function Wirescreen(options) {
+        var _ctx = this;
         options = options || {};
+
+        // constants
+        this.markerSize = 4;
+
+        // attributes
         this.type = options.type || Wirescreen.types.WINDOW;
         this.title = options.title || '';
+
+        // marker numbering [ order ]
+        // +----------------------+
+        // |  0[1]   1[3]   2[2]  |
+        // |  3[4]   4[6]   5[5]  |
+        // |  6[7]   7[9]   8[8]  |
+        // +----------------------+
+        // this.markers = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        this.markers = [0, 1, 4, 7, 8];
+        this._markerCoordinates = {};
+
+        // ui elements
+        this.$wirescreen = $newElem('canvas:cell:wirescreen');
+        this.markersElem = this.$wirescreen
+            .find('[data-wirescreen-markers]').get(0);
+        this.connectorsElem = this.$wirescreen
+            .find('[data-marker-connectors]').get(0);
+
+        if (this.markersElem) {
+            Raphael(this.markersElem, 10, 10, 
+                function () {
+                    _ctx._resetPaper.apply(_ctx, [this.canvas]);
+                    _ctx.markersElem.__paper = this;
+                    _ctx._registerSizes.call(_ctx);
+                    _ctx.redrawMarkers.call(_ctx);
+                });
+        }
+
+        if (this.connectorsElem) {
+            Raphael(this.connectorsElem, 10, 10, 
+                function () {
+                    _ctx._resetPaper.apply(_ctx, [this.canvas]);
+                    _ctx.connectorsElem.__paper = this;
+                    _ctx._registerSizes.call(_ctx);
+                    _ctx.redrawConnectors.call(_ctx);
+                });
+        }
+
+        // attach reference to self
+        this.$wirescreen.data('__wirescreen', this);
+
+        return this.$wirescreen;
     }
 
     Wirescreen.types = {
@@ -167,31 +349,378 @@
         POPUP: 2
     };
 
+    Wirescreen.prototype._resetPaper = function (paper) {
+        paper.setAttribute('preserveAspectRatio', 'none');
+        paper.setAttribute(
+            'xmlns:sdata', 'sdata:contains-information');
+        paper.removeAttribute('width');
+        paper.removeAttribute('height');
+        paper.style.position = 'absolute';
+        paper.style.top = '0';
+        paper.style.left = '0';
+        paper.style.width = '100%';
+        paper.style.height = '100%';
+    };
+
+    Wirescreen.prototype._registerSizes = function () {
+        if (!this.markersElem.__paper) return;
+        var mCanvas = this.markersElem.__paper.canvas;
+        if ('undefined' === typeof _register.markerCanvasOffsetTop) {
+            _register.markerCanvasOffsetTop = $(mCanvas).offset().top - 
+                this.$wirescreen.find('[data-real-wirescreen]').offset().top;
+        }
+        this.markerCanvasOffsetTop = _register.markerCanvasOffsetTop;
+        if ('undefined' === typeof _register.markerCanvasWidth) {
+            _register.markerCanvasWidth = $(mCanvas).floatWidth();
+        }
+        this.markerCanvasWidth = _register.markerCanvasWidth;
+        if ('undefined' === typeof _register.markerCanvasHeight) {
+            _register.markerCanvasHeight = $(mCanvas).floatHeight();
+            _register.markerPathDeviation = _register.markerCanvasHeight / 9;
+        }
+        this.markerCanvasHeight = _register.markerCanvasHeight;
+        this.markerPathDeviation = _register.markerPathDeviation;
+        
+        if (!this.connectorsElem.__paper) return;
+        var cCanvas = this.connectorsElem.__paper.canvas;
+        if ('undefined' === typeof _register.connectorCanvasWidth) {
+            _register.connectorCanvasWidth = $(cCanvas).floatWidth();
+        }
+        this.connectorCanvasWidth = _register.connectorCanvasWidth;
+    };
+
+    Wirescreen.prototype._markerPathString = function (marker, x, y) {
+        var pathString = new SVGPathString().moveTo(x, y);
+        // left column markers go above to avoid collision
+        if (([0, 3, 6].indexOf(marker) > -1) &&
+            ((this.markers.indexOf(marker + 1) > -1) ||
+            (this.markers.indexOf(marker + 2) > -1))) {
+            // obstruction
+            this._markerCoordinates[marker] = {
+                x: x - this.markerPathDeviation, y: y
+            };
+            pathString.verticalLineTo(-this.markerPathDeviation, true);
+        }
+        // center column markers go below to avoid collision
+        else if (([1, 4, 7].indexOf(marker) > -1) &&
+            (this.markers.indexOf(marker + 1) > -1)) {
+            // obstruction
+            this._markerCoordinates[marker] = {
+                x: x + this.markerPathDeviation, y: y
+            };
+            pathString.verticalLineTo(this.markerPathDeviation, true);
+        }
+        // right column markers always have straight paths
+        // [2, 5, 8] & unobstructed
+        else {
+            this._markerCoordinates[marker] = {x: x, y: y};
+        }
+        // straight path
+        pathString.horizontalLineTo(this.markerCanvasWidth);
+        return pathString;
+    };
+
+    Wirescreen.prototype.redrawMarkers = function () {
+        var _ctx = this,
+            paper = this.markersElem.__paper,
+            halfUnitX = _ctx.markerCanvasWidth / 6,
+            halfUnitY = _ctx.markerCanvasHeight / 6;
+
+        paper.clear();
+        this._markerCoordinates = {};
+        this.markers.forEach(function (marker) {
+            var x = (halfUnitX * 2 * (marker % 3)) + halfUnitX,
+                y = (halfUnitY * 2 * Math.floor(marker / 3)) + halfUnitY;
+
+            paper.newMarker(x, y, _ctx.markerSize);
+            paper.path(_ctx._markerPathString.apply(
+                _ctx, [marker, x, y]));
+        });
+    };
+
+    Wirescreen.prototype._ensureConnectorRefs = function () {
+        this.connectorRefs || this.connectorRefs = {};
+        if (!this.connectorRefs.startX) {
+            this.connectorRefs.startX = 3;
+        }
+        if (!this.connectorRefs.endX) {
+            this.connectorRefs.endX = 
+                $(this.connectorsElem.__paper.canvas)
+                    .floatWidth();
+        }
+        if (!this.connectorRefs.avgX) {
+            this.connectorRefs.avgX = 
+                (this.connectorRefs.endX + 
+                    this.connectorRefs.startX) / 2;
+        }
+        if (!this.connectorRefs.deltaX) {
+            this.connectorRefs.deltaX = 
+                this.connectorRefs.endX - 
+                    this.connectorRefs.startX;
+        }
+    };
+
+    Wirescreen.prototype._connectorPathString = function (marker, ey) {
+        var pathString = new SVGPathString().moveTo(x, y);
+        // get start from this._markerCoordinates
+        // ey arg refers to end point
+    };
+
+    Wirescreen.prototype.redrawConnectors = function () {
+        return;
+        this._ensureConnectorRefs();
+        var _ctx = this,
+            paper = this.connectorsElem.__paper,
+            startX = 3,
+            endX = $(paper.canvas).floatWidth(),
+            midX = (endX + startX) / 2,
+            deltaX = endX - startX,
+            curveAt = 0.4,
+            midX1 = (deltaX * curveAt) + startX,
+            midX2 = (deltaX * (1 - curveAt)) + startX;
+
+        $(this.markersElem.__paper.canvas)
+            .find('[sdata\\:marker]').each(function () {
+                console.log(_ctx.markerCanvasOffsetTop);
+                var startY = ($(this).attr('cy')*1) + 
+                        _ctx.markerCanvasOffsetTop,
+                    end = _ctx.$wirescreen
+                        .find('[data-elements]')
+                        .find('[data-group]').first(),
+                    endY = end.position().top + 
+                            (end.floatHeight() / 2),
+                    midY = (endY + startY) / 2;
+                    console.log(startX, startY, midX, midY, midX1, midX2, endX, endY);
+                    paper.clear();
+                    // paper.path(new SVGPathString()
+                    //     .moveTo(startX, startY)
+                    //     .lineTo(midX1, startY)
+                    //     .quadraticBezierCurveTo(midX, startY, midX, midY)
+                    //     .smoothQuadraticBezierCurveTo(midX2, endY)
+                    //     .lineTo(endX, endY)
+                    // );
+                    paper.path(new SVGPathString()
+                        .moveTo(0, startY)
+                        .lineTo(midX1, startY, 
+                            midX, midY, 
+                            midX2, endY, 
+                            endX, endY)
+
+                        // .lineTo(midX1, startY)
+                        // .curveTo(midX1, startY, midX, startY, midX, midY)
+                        // .smoothCurveTo(midX2, endY, midX2, endY)
+                        // .lineTo(endX, endY)
+                    );
+            });
+
+        // var _ref = this,
+        //     mPaper = this.markersElem.__paper,
+        //     cPaper = this.connectorsElem.__paper,
+        //     startYOffset = $(mPaper.canvas).offset().top - 
+        //         _ref.$wirescreen.find('[data-real-wirescreen]').offset().top;
+        // $(mPaper.canvas).find('[sdata\\:marker]').each(function () {
+        //     console.log('found marker');
+        //     var startX = 0;
+        //     var startY = ($(this).attr('cy')*1) + startYOffset;
+        //     var end = _ref.$wirescreen
+        //         .find('[data-elements]')
+        //         .find('[data-group]').first();
+        //     var endX = $(cPaper.canvas).floatWidth(); 
+        //     var endY = end.position().top + (
+        //             end.floatHeight() / 2
+        //         ); 
+        //     console.log(startX, startY, endX, endY);
+        //     cPaper.clear();
+        //     cPaper.path(new SVGPathString()
+        //         .moveTo(startX, startY)
+        //         .quadraticBezierCurveTo(
+        //             (endX + startX) / 2, 
+        //             startY, 
+        //             (endX + startX) / 2, 
+        //             (endY + startY) / 2)
+        //         .smoothQuadraticBezierCurveTo(
+        //             endX, endY)
+        //         );
+        // });
+    };
+    
+
+    // function resetPaper(context) {
+    //     return +function (paper) {
+    //         paper.setAttribute('preserveAspectRatio', 'none');
+    //         paper.setAttribute(
+    //             'xmlns:sdata', 'sdata:contains-information');
+    //         paper.removeAttribute('width');
+    //         paper.removeAttribute('height');
+    //         paper.style.position = 'absolute';
+    //         paper.style.top = '0';
+    //         paper.style.left = '0';
+    //         paper.style.width = '100%';
+    //         paper.style.height = '100%';
+    //     }(context.canvas);
+    // }
+
+    // function redrawMarkers($wirescreen) {
+    //     var wirescreenMarkersElem = $wirescreen
+    //             .find('[data-wirescreen-markers]').get(0);
+    //     if (!wirescreenMarkersElem) return false;
+
+    //     var paper = wirescreenMarkersElem.__paper;
+    //     var marker = paper.newMarker(20, 20, 4);
+    // }
+
+    // function redrawConnectors(elem) {
+    //     var markerConnectorsElem = null;
+    //     if (elem instanceof $) {
+    //         markerConnectorsElem = elem
+    //             .find('[data-marker-connectors]').get(0);
+    //     } else {
+    //         markerConnectorsElem = elem;
+    //     }
+    //     if (!markerConnectorsElem) return false;
+
+    //     var paper = markerConnectorsElem.__paper;
+    //     $(markerConnectorsElem)
+    //         .find('[sdata\\:marker]').each(function () {
+
+    //         });
+    //     var connector = paper.newConnector();
+    //     var circle = paper.circle(12, 12, 10);
+    //         // circle.attr("fill", "#f00");
+    //         // circle.attr("stroke", "#fff");
+    // }
+
+    // function setUpConnectors($wirescreen) {
+    //     var wirescreenMarkersElem = $wirescreen
+    //             .find('[data-wirescreen-markers]').get(0),
+    //         markerConnectorsElem = $wirescreen
+    //             .find('[data-marker-connectors]').get(0);
+
+    //     if (!wirescreenMarkersElem) return false;
+    //     Raphael(wirescreenMarkersElem, 10, 10, function () {
+    //         resetPaper(this);
+    //         wirescreenMarkersElem.__paper = this;
+    //         redrawMarkers(wirescreenMarkersElem);
+    //     });
+    //     if (!markerConnectorsElem) return false;
+    //     Raphael(markerConnectorsElem, 10, 10, function () {
+    //         resetPaper(this);
+    //         markerConnectorsElem.__paper = this;
+    //         redrawConnectors(markerConnectorsElem);
+    //     });
+    //     return true;
+    // }
+
     // actions
 
     function addWirescreen(e) {
         if (null === e) return;
-        $cell = $(e.target).parents('[data-cell]');
-        $wirescreen = $newElem('canvas:cell:wirescreen');
-        $wirescreen.data('__wirescreen', new Wirescreen({
-            type: Wirescreen.types.WINDOW,
-            title: 'untitled'
-        }));
+
+        var $cell = $(e.target).parents('[data-cell]'),
+            $wirescreen = new Wirescreen({
+                type: Wirescreen.types.WINDOW,
+                title: 'untitled'
+            });
+
         $cell.empty()
             .append($newElem('canvas:cell:options'))
             .append($newElem('canvas:cell:content')
                 .append($wirescreen));
-        // add resize listener
-        $cell.onResize(function (e) {
-            $(document).trigger(
-                'lw.cell.resized', [this]);
-        });
+
         resizeGrid();
+
+        // var $cell = $(e.target).parents('[data-cell]'),
+        //     $wirescreen = $newElem('canvas:cell:wirescreen');
+
+        // $wirescreen.data('__wirescreen', new Wirescreen({
+        //     type: Wirescreen.types.WINDOW,
+        //     title: 'untitled'
+        // }));
+        // $cell.empty()
+        //     .append($newElem('canvas:cell:options'))
+        //     .append($newElem('canvas:cell:content')
+        //         .append($wirescreen));
+        // // add resize listener
+        // $cell.onResize(function (e) {
+        //     $(document).trigger(
+        //         'lw.cell.resized', [this]);
+        // });
+        // // set up connectors
+        // // setUpConnectors($wirescreen);
+        // resizeGrid();
     }
 
     function removeWirescreen(e) {
         // remove resize listener
     }
+
+    /*
+
+    function resetPaper(context) {
+        return +function (paper) {
+            paper.setAttribute('preserveAspectRatio', 'none');
+            paper.setAttribute(
+                'xmlns:sdata', 'sdata:contains-information');
+            paper.removeAttribute('width');
+            paper.removeAttribute('height');
+            paper.style.position = 'absolute';
+            paper.style.top = '0';
+            paper.style.left = '0';
+            paper.style.width = '100%';
+            paper.style.height = '100%';
+        }(context.canvas);
+    }
+
+    function redrawMarkers($wirescreen) {
+        var wirescreenMarkersElem = $wirescreen
+                .find('[data-wirescreen-markers]').get(0);
+        if (!wirescreenMarkersElem) return false;
+
+        var paper = wirescreenMarkersElem.__paper;
+        var marker = paper.newMarker(20, 20, 4);
+    }
+
+    function redrawConnectors(elem) {
+        var markerConnectorsElem = null;
+        if (elem instanceof $) {
+            markerConnectorsElem = elem
+                .find('[data-marker-connectors]').get(0);
+        } else {
+            markerConnectorsElem = elem;
+        }
+        if (!markerConnectorsElem) return false;
+
+        var paper = markerConnectorsElem.__paper;
+        $(markerConnectorsElem)
+            .find('[sdata\\:marker]').each(function () {
+
+            });
+        var connector = paper.newConnector();
+        var circle = paper.circle(12, 12, 10);
+            // circle.attr("fill", "#f00");
+            // circle.attr("stroke", "#fff");
+    }
+
+    function setUpConnectors($wirescreen) {
+        var wirescreenMarkersElem = $wirescreen
+                .find('[data-wirescreen-markers]').get(0),
+            markerConnectorsElem = $wirescreen
+                .find('[data-marker-connectors]').get(0);
+
+        if (!wirescreenMarkersElem) return false;
+        Raphael(wirescreenMarkersElem, 10, 10, function () {
+            resetPaper(this);
+            wirescreenMarkersElem.__paper = this;
+            redrawMarkers(wirescreenMarkersElem);
+        });
+        if (!markerConnectorsElem) return false;
+        Raphael(markerConnectorsElem, 10, 10, function () {
+            resetPaper(this);
+            markerConnectorsElem.__paper = this;
+            redrawConnectors(markerConnectorsElem);
+        });
+        return true;
+    } */
 
     function evalEventBurst(key, fn) {
         return window.setTimeout(function () {
@@ -217,9 +746,9 @@
         if ('undefined' === typeof _eventBursts.cellResized) {
             _eventBursts.cellResized = [];
         }
-        rowContext = $(context).parents('[data-row]').get(0);
+        var rowContext = $(context).parents('[data-row]').get(0);
         // console.log(context);
-        _eventBursts.cellResized.push(rowContext)
+        _eventBursts.cellResized.push(rowContext);
         evalEventBurst('cellResized', function (rowElem) {
             // console.log('resizing row ' + randStr());
             // console.log(rowElem);
@@ -253,7 +782,7 @@
             'min-width': computePageWidth(cols, _register.cellWidth)
         });
 
-        $rows = getGrid().find('[data-row]');
+        var $rows = getGrid().find('[data-row]');
         var $rowGuides = getRowGuide()
             .find('[data-guide-row]');
 
@@ -269,7 +798,10 @@
         }
 
         for (var i = 0; i < $rows.length; i++) {
-            $rowGuides.eq(i).css('height', $rows.eq(i).height());
+            $rowGuides.eq(i).css('height', 
+                $rows.eq(i)
+                .floatHeight());
+                // .height());
         }
         scrollGuides(null);
     }
@@ -281,7 +813,8 @@
             .get().indexOf(rowElem);
 
         getRowGuide().find('[data-guide-row]')
-            .eq(num).css('height', $(rowElem).height());
+            .eq(num).css('height', 
+                $(rowElem).floatHeight());
     }
 
     function scrollGuides(e) {
@@ -289,7 +822,7 @@
 
             var viewportScrollLeft = getViewport().scrollLeft(),
                 viewportScrollTop = getViewport().scrollTop(),
-                canvasTop = getCanvas().position().top
+                canvasTop = getCanvas().position().top,
                 canvasOffsetTop = getCanvas().offset().top;
 
             getColGuideParent()
@@ -338,7 +871,7 @@
     }
 
     function recalcCellWidth() {
-        $tempCell = $newElem('canvas:cell')
+        var $tempCell = $newElem('canvas:cell')
             .find('[data-add-wirescreen]')
             .remove()
             .end()
@@ -351,7 +884,8 @@
 
         _register.cellWidth = $tempCell
             .find('[data-wirescreen]')
-            .width();
+            .floatWidth();
+            // .width();
 
         $tempCell.remove();
     }
@@ -382,6 +916,11 @@
         refreshGuides(maxCol);
     }
 
+    // only for use with onResize() and offResize()
+    function onCellResize(e) {
+        $(document).trigger('lw.cell.resized', [this]);
+    }
+
     function resizeGrid() {
         var $extraRows = $();
         getGrid().find('[data-row]').each(function () {
@@ -394,9 +933,15 @@
                 }
             });
             if (!$extraCols.length) {
-                $(this).append($newElem('canvas:cell'));
+                // add new cell with resize listener
+                $(this).append(
+                    $newElem('canvas:cell')
+                        .onResize(onCellResize));
             } else if ($extraCols.length > 1) {
-                $extraCols.not($extraCols[0]).remove();
+                // remove resize listener and cell
+                $extraCols.not($extraCols[0])
+                    .offResize(onCellResize)
+                    .remove();
             }
             if ($(this).find('[data-cell]').length < 2) {
                 $extraRows = $extraRows.add(this);
@@ -406,9 +951,13 @@
         });
         if (!$extraRows.length) {
             getGrid().append($newElem('canvas:row')
-                .append($newElem('canvas:cell')));
+                .append($newElem('canvas:cell')
+                    .onResize(onCellResize)));
         } else if ($extraRows.length > 1) {
-            $extraRows.not($extraRows[0]).remove();
+            $extraRows.not($extraRows[0])
+                .find('[data-cell]')
+                .offResize(onCellResize)
+                .end().remove();
         }
         resizePage();
     }
@@ -448,15 +997,10 @@
         resizeGrid();
     }
 
-    $.fn.assocEvent = function (onEvent, doEvent) {
-        $(this).on(onEvent, function (e) {
-            $(document).trigger(doEvent, e);
-        });
-    };
-
-    $.fn.on
-
     // timer functions
+
+    //
+
     // function 
 
     $(function () {
@@ -478,7 +1022,8 @@
 
         // set up canvas
         resetCanvas();
-        // for (var i = 0; i < 10; i++) { var $elem = $('[data-add-wirescreen]'); for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
+        
+        for (var i = 0; i < 10; i++) { var $elem = $('[data-add-wirescreen]'); for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
 
     });
 

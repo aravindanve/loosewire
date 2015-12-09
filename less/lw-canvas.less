@@ -39,6 +39,20 @@
 }
 
 @grey-text: #888;
+@wirescreen-color: #c0c6d0;
+@marker-color: #ABECF4;
+
+.marker-svg-styles() {
+    circle, rect {
+        fill: @marker-color;
+        stroke: @marker-color;
+    }
+
+    path {
+        stroke: @marker-color;
+        stroke-width: 2px;
+    }
+}
 
 .lw-canvas {
     padding: 80px;
@@ -208,6 +222,11 @@
             &:hover {
                 background-color: #eee;
             }
+
+            &:active {
+                background-color: #0088FF;
+                color: #fff;
+            }
         }
 
         @wirescreen-width: 160px;
@@ -222,9 +241,6 @@
             float: left;
             clear: both;
         }
-
-        @wirescreen-color: #c0c6d0;
-        @marker-color: #ABECF4;
         // @marker-color: rgba(75, 234, 244, 0.5); // overlapping transparencies
 
         .wirescreen {
@@ -259,7 +275,46 @@
                 left: 0;
             }
 
-            @marker-size: 5px;
+            .wirescreen-add-markers {
+                margin: -15px;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 99;
+
+                .marker-row {
+                    float: none;
+                    height: 33.33333%;
+
+                    .marker-col {
+                        float: left;
+                        width: 33.33333%;
+                        height: 100%;
+
+                        a {
+                            // hack
+                            line-height: 30px;
+
+                            display: block;
+                            height: 100%;
+                            text-align: center;
+
+                            span.h {
+                                display: none;
+                            }
+
+                            &:hover {
+                                span.h {
+                                    display: inline-block;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             .wirescreen-markers {
                 margin: -15px;
@@ -270,106 +325,8 @@
                 bottom: 0;
                 left: 0;
 
-                .marker {
-                    margin: -@marker-size 0 0 -@marker-size;
-
-                    position: absolute;
-                    height: 0;
-                    width: 0;
-                    top: 50%;
-                    left: 50%;
-
-                    border-radius: 100px;
-                    border: @marker-color solid @marker-size;
-
-                    @marker-offset: 20%;
-
-                    &.upper-left {
-                        top: @marker-offset;
-                        left: @marker-offset;
-                    }
-
-                    &.upper-right {
-                        top: @marker-offset;
-                        left: (100% - @marker-offset);
-                    }
-
-                    &.center {
-                        top: 50%;
-                        left: 50%;
-                    }
-
-                    &.lower-right {
-                        top: (100% - @marker-offset);
-                        left: (100% - @marker-offset);
-                    }
-
-                    &.lower-left {
-                        top: (100% - @marker-offset);
-                        left: @marker-offset;
-                    }
-
-                    .marker-line-vert,
-                    .marker-line-horiz {
-                        position: absolute;
-                    }
-
-                    @marker-line-length: (@wirescreen-width * (unit(@marker-offset) / 100)) + 2px;
-
-                    .marker-line-horiz {
-                        width: @marker-line-length + 5px;
-                        margin-top: -1px;
-
-                        top: 0;
-                        height: 0;
-                        border: @marker-color solid 1px;
-                    }
-
-                    &.upper-left .marker-line-horiz, 
-                    &.lower-left .marker-line-horiz {
-                        width: (@wirescreen-width - @marker-line-length) + 5px;
-                        margin-top: -1px;
-
-                        top: 0;
-                        height: 0;
-                        border: @marker-color solid 1px;
-                    }
-
-                    &.center .marker-line-horiz {
-                        width: (@wirescreen-width - (@wirescreen-width * 0.5)) + 5px;
-                        margin-top: -1px;
-
-                        top: 0;
-                        height: 0;
-                        border: @marker-color solid 1px;
-                    }
-
-                    &.upper-left .marker-line-vert {
-                        height: 15px;
-                        margin-left: -1px;
-
-                        bottom: 0;
-                        width: 0;
-                        border: @marker-color solid 1px;
-                    }
-
-                    &.upper-left .marker-line-horiz {
-                        margin-top: -15px;
-                    }
-
-                    &.lower-left .marker-line-vert {
-                        height: 15px;
-                        margin-left: -1px;
-
-                        top: 0;
-                        width: 0;
-                        border: @marker-color solid 1px;
-                    }
-
-                    &.lower-left .marker-line-horiz {
-                        top: -2px;
-                        margin-top: 15px;
-                    }
+                svg {
+                    .marker-svg-styles;
                 }
             }
         }
@@ -406,13 +363,17 @@
 
         .marker-connectors {
             margin: 25px 0 35px;
-            width: 40px;
+            width: 40px + 3px;
 
             position: absolute;
             top: 0;
             right: 0;
             bottom: 0;
             /* background-color: #ff0; */
+
+            svg {
+                .marker-svg-styles;
+            }
         }
 
         @wirescreen-right-width: 260px;
