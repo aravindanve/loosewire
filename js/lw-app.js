@@ -65,7 +65,7 @@
         } 
     }
 
-    // register access
+    // register getters
 
     function getViewport() {
         if (!(_register.viewport instanceof $)) {
@@ -161,10 +161,6 @@
             ) > _register.canvasPaddingTop;
     }
 
-    // get elements
-
-    // 
-
     // extentions
 
     $.fn.floatWidth = function () {
@@ -182,9 +178,14 @@
         return $(this);
     };
 
-    Raphael.fn.newMarker = function () {
-        var marker = this.circle.apply(this, arguments);
-        marker.node.setAttribute('sdata:marker', '');
+    Raphael.fn.newMarker = function (id) {
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+            args.push(arguments[i]);
+        }
+        var marker = this.circle.apply(this, args);
+        marker.node.setAttribute(
+            'sdata:marker', 'undefined' !== id? id : '');
         return marker;
     }; 
 
@@ -195,25 +196,6 @@
     };
 
     // classes
-
-    // SVGPathString
-
-    // M  moveto (x y)+
-    // Z  closepath (none)
-    // L  lineto (x y)+
-    // H  horizontal lineto x+
-    // V  vertical lineto y+
-    // C  curveto (x1 y1 x2 y2 x y)+
-    // S  smooth curveto (x2 y2 x y)+
-    // Q  quadratic Bézier curveto (x1 y1 x y)+
-    // T  smooth quadratic Bézier curveto (x y)+
-    // A  elliptical arc (rx ry x-axis-rotation large-arc-flag sweep-flag x y)+
-    // R  Catmull-Rom curveto*    x1 y1 (x y)+
-
-    // * “Catmull-Rom curveto” is a not standard SVG command and added in 2.0 
-    // to make life easier. Note: there is a special case when path consist of
-    // just three commands: “M10,10R…z”. In this case path will smoothly
-    // connects to its beginning. 
 
     function SVGPathString() {
         this.pathString = '';
@@ -281,7 +263,11 @@
                 delta? 't': 'T', x, y);
             return this;
         },
-        ellipticalArc: function (rx, ry, xAxisRotation, largeArcFlag, sweepFlag, x, y, delta) {
+        ellipticalArc: function (
+            rx, ry, xAxisRotation, 
+            largeArcFlag, sweepFlag, 
+            x, y, delta
+        ) {
             this.pathString += this._cmdStr(
                 delta? 'a': 'A', rx, ry, xAxisRotation, 
                 largeArcFlag, sweepFlag, x, y);
@@ -397,7 +383,7 @@
             (this.markers.indexOf(marker + 2) > -1))) {
             // obstruction
             this._markerCoordinates[marker] = {
-                x: x - this.markerPathDeviation, y: y
+                x: x, y: y - this.markerPathDeviation
             };
             pathString.verticalLineTo(-this.markerPathDeviation, true);
         }
@@ -406,7 +392,7 @@
             (this.markers.indexOf(marker + 1) > -1)) {
             // obstruction
             this._markerCoordinates[marker] = {
-                x: x + this.markerPathDeviation, y: y
+                x: x, y: y + this.markerPathDeviation
             };
             pathString.verticalLineTo(this.markerPathDeviation, true);
         }
@@ -432,16 +418,21 @@
             var x = (halfUnitX * 2 * (marker % 3)) + halfUnitX,
                 y = (halfUnitY * 2 * Math.floor(marker / 3)) + halfUnitY;
 
-            paper.newMarker(x, y, _ctx.markerSize);
+            paper.newMarker(marker, x, y, _ctx.markerSize);
             paper.path(_ctx._markerPathString.apply(
                 _ctx, [marker, x, y]));
         });
+        this.connectorDeviationFactor = this.markers.length;
     };
 
     Wirescreen.prototype._ensureConnectorRefs = function () {
-        this.connectorRefs || this.connectorRefs = {};
+        if (!this.connectorRefs) {
+            this.connectorRefs = {};
+        }
         if (!this.connectorRefs.startX) {
-            this.connectorRefs.startX = 3;
+            this.connectorRefs.startX = 
+                parseInt($(this.markersElem)
+                    .css('borderRightWidth'));
         }
         if (!this.connectorRefs.endX) {
             this.connectorRefs.endX = 
@@ -458,6 +449,14 @@
                 this.connectorRefs.endX - 
                     this.connectorRefs.startX;
         }
+        if (this.connectorDeviationFactor !== 
+            this.connectorRefs.connectorDeviationFactor) {
+            this.connectorRefs.connectorDeviationFactor = 
+                this.connectorDeviationFactor;
+            this.connectorRefs.connectorDeviation = 
+                this.connectorRefs.deltaX - 
+                    this.connectorDeviationFactor;
+        }
     };
 
     Wirescreen.prototype._connectorPathString = function (marker, ey) {
@@ -467,8 +466,46 @@
     };
 
     Wirescreen.prototype.redrawConnectors = function () {
-        return;
         this._ensureConnectorRefs();
+        var _ctx = this,
+            paper = this.connectorsElem.__paper,
+            connectorCount = 0;
+        var curveAt = 0.5,
+            avgX1 = (this.connectorRefs.deltaX * curveAt) +
+                this.connectorRefs.startX,
+            avgX2 = (this.connectorRefs.deltaX * (1 - curveAt)) +
+                this.connectorRefs.startX;
+
+        paper.clear();
+        this.$wirescreen.find('[data-group]').each(function () {
+            var groupId = $(this).data('group');
+            if ('undefined' === typeof _ctx._markerCoordinates[groupId]) {
+                return;
+            }
+            // connector deviation adjustment
+            // if (this.)
+            // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> HERE
+            // var deviationAmt = 
+
+            var startY = _ctx._markerCoordinates[groupId].y +
+                    _ctx.markerCanvasOffsetTop,
+                endY = $(this).position().top + 
+                    ($(this).floatHeight() / 2),
+                avgY = (endY + startY) / 2;
+            console.log(startY, avgY, endY);
+
+            paper.path(new SVGPathString()
+                .moveTo(0, startY)
+                .lineTo(
+                    avgX1, startY,
+                    _ctx.connectorRefs.avgX, avgY,
+                    avgX2, endY,
+                    _ctx.connectorRefs.endX, endY
+                ));
+            connectorCount++;
+        });
+
+        /*
         var _ctx = this,
             paper = this.connectorsElem.__paper,
             startX = 3,
@@ -490,7 +527,8 @@
                     endY = end.position().top + 
                             (end.floatHeight() / 2),
                     midY = (endY + startY) / 2;
-                    console.log(startX, startY, midX, midY, midX1, midX2, endX, endY);
+                    console.log(startX, startY, midX, midY, 
+                        midX1, midX2, endX, endY);
                     paper.clear();
                     // paper.path(new SVGPathString()
                     //     .moveTo(startX, startY)
@@ -511,7 +549,7 @@
                         // .smoothCurveTo(midX2, endY, midX2, endY)
                         // .lineTo(endX, endY)
                     );
-            });
+            }); */
 
         // var _ref = this,
         //     mPaper = this.markersElem.__paper,
@@ -1001,7 +1039,7 @@
 
     //
 
-    // function 
+    // finally
 
     $(function () {
 
@@ -1023,7 +1061,8 @@
         // set up canvas
         resetCanvas();
         
-        for (var i = 0; i < 10; i++) { var $elem = $('[data-add-wirescreen]'); for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
+        for (var i = 0; i < 10; i++) { var $elem = $('[data-add-wirescreen]'); 
+            for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
 
     });
 
