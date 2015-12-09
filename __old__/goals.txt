@@ -1,1 +1,6 @@
 build.php --> makes a single loosewire.php file
+
+enlarge area
+add marker, above each group show enlarge to different screen option or unenlarge option on enlarged screen, this moves current elements to a new group screen
+
+when hovering over action links, show svg arrow linking current screen and next, and when clicked, animate to next screen, (during animation, arrow remains visible, and is hidden after animation
