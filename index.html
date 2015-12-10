@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Wireframing Tool</title>
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <link rel="stylesheet/less" type="text/css" href="less/lw-app.less">
     <script src="js/less-2.5.3.min.js"></script>
 </head>
@@ -78,7 +79,14 @@
         </div>
         <!-- wirescreen -->
         <div class="note" data-ui-item-id="canvas:cell:wirescreen:note" data-has-dyntext contenteditable="true"></div>
-
+        <div class="group" data-ui-item-id="canvas:cell:wirescreen:group" data-group>
+            <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span><i class="fa fa-plus-circle"></i> add element</span></a>
+        </div>
+        <div class="element"  data-ui-item-id="canvas:cell:wirescreen:element" data-element>
+            <div class="icon" data-type="action">A</div>
+            <div class="title" data-has-dyntext contenteditable="true">element</div>
+            <div class="description" data-has-dyntext contenteditable="true">...</div>
+        </div>
         <div class="lw-wirescreen" data-ui-item-id="canvas:cell:wirescreen" data-wirescreen>
             <div class="wirescreen-lhs">
                 <div class="wirescreen" data-type="window" data-real-wirescreen>
@@ -90,51 +98,51 @@
                                 <div class="marker-row">
                                     <div class="marker-col" data-marker-col="0">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="1">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="2">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="marker-row">
                                     <div class="marker-col" data-marker-col="3">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="4">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="5">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="marker-row">
                                     <div class="marker-col" data-marker-col="6">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="7">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                     <div class="marker-col" data-marker-col="8">
                                         <a class="add-wirescreen-item" href="#" data-add-wirescreen-marker>
-                                            <span class="h">&plus;</span>
+                                            <span class="h"><i class="fa fa-plus-circle"></i></span>
                                         </a>
                                     </div>
                                 </div>
@@ -150,54 +158,12 @@
                     <div class="url" data-has-dyntext contenteditable="true">page/URL</div>
                 </div>
                 <div class="notes">
-                    <a class="add-wirescreen-item" href="#" data-add-wirescreen-note><span>&plus; add note</span></a>
+                    <a class="add-wirescreen-item" href="#" data-add-wirescreen-note><span><i class="fa fa-plus-circle"></i> add note</span></a>
                 </div>
                 <div class="marker-connectors" data-marker-connectors></div>
             </div>
             <div class="wirescreen-rhs">
-                <div class="elements" data-elements>
-                    <div class="group" data-group="0">
-                        <div class="element" data-connect-marker="">
-                            <div class="icon" data-type="action">A</div>
-                            <div class="title" data-has-dyntext contenteditable="true">this is an action</div>
-                            <div class="description" data-has-dyntext contenteditable="true">this is a short description about the action</div>
-                        </div>
-                        <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span>&plus; add element</span></a>
-                    </div>
-                    <div class="group" data-group="1">
-                        <div class="element" data-connect-marker="">
-                            <div class="icon" data-type="action">A</div>
-                            <div class="title" data-has-dyntext contenteditable="true">this is an action</div>
-                            <div class="description" data-has-dyntext contenteditable="true">this is a short description about the action</div>
-                        </div>
-                        <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span>&plus; add element</span></a>
-                    </div>
-                    <div class="group" data-group="4">
-                        <div class="element" data-connect-marker="">
-                            <div class="icon" data-type="action">A</div>
-                            <div class="title" data-has-dyntext contenteditable="true">this is an action</div>
-                            <div class="description" data-has-dyntext contenteditable="true">this is a short description about the action</div>
-                        </div>
-                        <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span>&plus; add element</span></a>
-                    </div>
-                    <div class="group" data-group="8">
-                        <div class="element" data-connect-marker="">
-                            <div class="icon" data-type="action">A</div>
-                            <div class="title" data-has-dyntext contenteditable="true">this is an action</div>
-                            <div class="description" data-has-dyntext contenteditable="true">this is a short description about the action</div>
-                        </div>
-                        <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span>&plus; add element</span></a>
-                    </div>
-                    <div class="group" data-group="7">
-                        <div class="element" data-connect-marker="">
-                            <div class="icon" data-type="action">A</div>
-                            <div class="title" data-has-dyntext contenteditable="true">this is an action</div>
-                            <div class="description" data-has-dyntext contenteditable="true">this is a short description about the action</div>
-                        </div>
-                        <a class="add-wirescreen-item" href="#" data-add-wirescreen-element><span>&plus; add element</span></a>
-                    </div>
-                    <a class="add-wirescreen-item" href="#" data-add-wirescreen-element-group><span>&plus; add group</span></a>
-                </div>
+                <div class="elements" data-elements></div>
             </div>
             <div class="actions"></div>
         </div>

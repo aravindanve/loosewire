@@ -41,6 +41,8 @@
 @grey-text: #888;
 @wirescreen-color: #c0c6d0;
 @marker-color: #ABECF4;
+@marker-color: #1CD4FF;
+@wirescreen-border-width: 2px;
 
 .marker-svg-styles() {
     circle, rect {
@@ -241,7 +243,6 @@
             float: left;
             clear: both;
         }
-        // @marker-color: rgba(75, 234, 244, 0.5); // overlapping transparencies
 
         .wirescreen {
             height: @wirescreen-height;
@@ -249,7 +250,7 @@
 
             position: relative;
             float: left;
-            border: @wirescreen-color solid 3px;
+            border: @wirescreen-color solid @wirescreen-border-width;
 
             .wirescreen-inner {
                 position: relative;
@@ -262,7 +263,7 @@
                 margin: -25px -15px 15px;
 
                 float: none;
-                border-bottom: @wirescreen-color solid 3px;
+                border-bottom: @wirescreen-color solid @wirescreen-border-width;
             }
 
             .wirescreen-art {
@@ -363,7 +364,7 @@
 
         .marker-connectors {
             margin: 25px 0 35px;
-            width: 40px + 3px;
+            width: 40px + @wirescreen-border-width;
 
             position: absolute;
             top: 0;
