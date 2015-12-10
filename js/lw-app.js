@@ -220,7 +220,7 @@
     }
 
     SVGPathString.prototype = {
-        toString: function (x, y) {
+        toString: function () {
             return this.pathString;
         },
         _cmdStr: function (cmd) {
@@ -588,9 +588,21 @@
 
             var startY = _ctx._markerCoordinates[groupId].y +
                     _ctx.markerCanvasOffsetTop,
+                targetRangeAmount = 0.8,
+                targetHeight = $(this).floatHeight() / 2,
                 endY = $(this).position().top + 
-                    ($(this).floatHeight() / 2),
-                avgY = (endY + startY) / 2;
+                    targetHeight,
+                avgY = (endY + startY) / 2,
+                targetRangeMin = endY - 
+                    (targetHeight * targetRangeAmount),
+                targetRangeMax = endY + 
+                    (targetHeight * targetRangeAmount);
+
+            if ((startY >= targetRangeMin) && 
+                (startY <= targetRangeMax)) {
+                endY = startY;
+                avgY = startY;
+            }
 
             paper.path(new SVGPathString()
                 .moveTo(0, startY)
@@ -663,6 +675,26 @@
 
     function removeWirescreen(e) {
         // remove resize listener
+    }
+
+    // function contentEditableOnFocus(e) {
+    //     var $elem = $(this);
+    //     $elem.data('before', $elem.html());
+    //     return $elem;
+    // }
+
+    // function contentEditableOnChange(e) {
+    //     var $elem = $(this);
+    //     if ($elem.data('before') !== $elem.html()) {
+    //         $elem.data('before', $elem.html());
+    //         $elem.trigger('lw.contenteditable.change', e);
+    //     }
+    //     return $elem;
+    // }
+
+    function contenteditableChange(e) {
+        console.log('contenteditable changed');
+        $(this).getWirescreenInstance().redrawConnectors();
     }
 
     function evalEventBurst(key, fn) {
@@ -962,17 +994,27 @@
             '[data-add-wirescreen]', addWirescreen);
         $(document).on('click', 
             '[data-add-wirescreen-marker]', addWirescreenMarker);
+        // $(document).on('focus', 
+        //         '[contenteditable]', contentEditableOnFocus)
+        //     .on('blur keyup paste input', 
+        //         '[contenteditable]', contentEditableOnChange);
+        $(document).on('focus blur keyup paste input', 
+            '[contenteditable]', contenteditableChange);
 
         $(document).on('lw.viewport.scroll', scrollGuides);
         $(document).on('lw.window.resize', scrollGuides);
         $(document).on('lw.cell.resized', cellResized);
+        // $(document).on('lw.contenteditable.change', contenteditableChange);
+
+
 
         // set up canvas
         resetCanvas();
         
         // $('[data-add-wirescreen]').first().trigger('click');
-        // for (var i = 0; i < 10; i++) { var $elem = $('[data-add-wirescreen]'); 
-        //     for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
+        // for (var i = 0; i < 10; i++) { 
+        //  var $elem = $('[data-add-wirescreen]'); 
+        //  for (var j = 0; j < 5; j++) { $elem.eq(j).trigger('click'); }}
 
     });
 
